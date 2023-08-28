@@ -6,4 +6,4 @@
 python workflow.py
 
 ### ref
-diffusion 代码链接为[ https://github.com/chenning0115/SpectralDiff](https://github.com/chenning0115/spectraldiff_diffusion/)https://github.com/chenning0115/spectraldiff_diffusion/
+diffusion 代码链接为https://github.com/chenning0115/spectraldiff_diffusion/
