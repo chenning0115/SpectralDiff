@@ -45,7 +45,6 @@ def train_convention_by_param(param):
     # 1. 数据生成
     dataloader = HSIDataLoader(param)
     trainX, trainY, testX, testY, allX = dataloader.generate_torch_dataset() 
-    print('99999')
 
     # 2. 训练和测试
     trainer = get_trainer(param)
@@ -53,13 +52,11 @@ def train_convention_by_param(param):
     eval_res = trainer.final_eval(testX, testY)
     pred_all = trainer.test(allX)
     pred_matrix = dataloader.reconstruct_pred(pred_all)
-    print('aaaaa')
 
     #3. record all information
     recorder.record_param(param)
     recorder.record_eval(eval_res)
     recorder.record_pred(pred_matrix)
-    print('bbbbb')
 
     return recorder 
 
@@ -67,8 +64,8 @@ def train_convention_by_param(param):
 
 
 include_path = [
-    # 'indian_diffusion.json',
-    'pavia_diffusion.json',
+     'indian_diffusion.json',
+    # 'pavia_diffusion.json',
     # 'salinas_diffusion.json',
 ]
 def run_one(param):
@@ -114,31 +111,6 @@ def result_file_exists(prefix, file_name_part):
         if file_name_part in l:
             return True
     return False
-
-def run_diffusions():
-    sample_num = 30
-    config_name = 'salinas_diffusion.json'
-    tlist = [5, 10, 50, 100, 200]
-    layers = [0, 1, 2]
-
-    path_param = '%s/%s' % (config_path_prefix, config_name)
-    with open(path_param, 'r') as fin:
-        params = json.loads(fin.read())
-        for t in tlist:
-            for l in layers:
-                res_file_part = "%s_%s_%s" %(config_name, t, l) 
-                if result_file_exists(DEFAULT_RES_SAVE_PATH_PREFIX, res_file_part):
-                    print(res_file_part, "exits, now continue...")
-                    continue
-                data_sign = params['data']['data_sign']
-                uniq_name = "%s_%s_%s" % (config_name, t, l)
-                params['uniq_name'] = uniq_name
-                params['data']['data_file'] = '%s_%s' % (data_sign, sample_num)
-                params['data']['diffusion_data_sign'] = 't%s_%s_full.pkl.npy' % (t, l)
-                print("schedule %s..." % uniq_name)
-                # subprocess.run('python ./workflow.py', shell=True)
-                run_one(params)
-                print("schedule done of %s..." % uniq_name)
 
 
 if __name__ == "__main__":
