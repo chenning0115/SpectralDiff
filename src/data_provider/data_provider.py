@@ -39,37 +39,7 @@ class DataSetIter(torch.utils.data.Dataset):
     def __len__(self):
         return self.size
 
-    def dump(self, dump_path):
-        if not os.path.exists(dump_path):
-            os.makedirs(dump_path)
-        np.save("%s/base_img" % dump_path, self.base_img)
-        np.save('%s/base_labels' % dump_path, self.base_labels)
-        meta = {
-            'index2pos': self.index2pos,
-            'margin': self.margin,
-            'patch_size': self.patch_size,
-            'append_dim': self.append_dim
-        }
-        ss = json.dumps(meta)
-        with open('%s/meta' % dump_path, 'w') as fout:
-            fout.write(ss)
-            fout.flush()
-
-    @staticmethod 
-    def load(dump_path):
-        base_img = np.load("%s/base_img.npy" % dump_path)
-        base_labels = np.load("%s/base_labels.npy" % dump_path)
-        with open('%s/meta' % dump_path, 'r') as fin:
-            js = json.loads(fin.read())
-            index2pos_temp = js['index2pos']
-            margin = js['margin']
-            patch_size = js['patch_size']
-            append_dim = js['append_dim']
-
-            index2pos = {int(k):v for k,v in index2pos_temp.items()}
-        return DataSetIter(base_img, base_labels, index2pos, margin, patch_size, append_dim)
     
-
 class HSIDataLoader(object):
     def __init__(self, param) -> None:
         self.data_param = param['data']
@@ -86,7 +56,6 @@ class HSIDataLoader(object):
         self.data_file = self.data_param.get('data_file', self.data_sign)
         self.patch_size = self.data_param.get('patch_size', 13) # n * n
         self.remove_zeros = self.data_param.get('remove_zeros', True)
-        self.test_ratio = self.data_param.get('test_ratio', 0.9)
         self.batch_size = self.data_param.get('batch_size', 256)
         self.none_zero_num = self.data_param.get('none_zero_num', 0)
         self.spectracl_size = self.data_param.get("spectral_size", 0)
@@ -95,17 +64,11 @@ class HSIDataLoader(object):
         self.norm_type = self.data_param.get("norm_type", 'max_min') # 'none', 'max_min', 'mean_var'
 
 
-        self.diffusion_sign = self.data_param.get('diffusion_sign', False)
-        self.diffusion_data_sign_path_prefix = self.data_param.get("diffusion_data_sign_path_prefix", '')
-        self.diffusion_data_sign = self.data_param.get("diffusion_data_sign", "unet3d_27000.pkl")
+        self.diffusion_data_path = self.data_param.get("diffusion_data_path", "unet3d_pavia.pkl")
 
-
-        self.dump = self.data_param.get("dump", False)
-        self.dump_path_prefix = self.data_param.get('dump_path_prefix', '%s/%s/dump/%s' % (self.data_path_prefix, self.data_sign, self.data_file))
-        self.use_dump = self.data_param.get("use_dump", False)
 
     def load_data_from_diffusion(self, data_ori, labels):
-        path = "%s/%s" % (self.diffusion_data_sign_path_prefix, self.diffusion_data_sign)
+        path = "%s/%s" % (self.data_path_prefix, self.diffusion_data_path)
         data = np.load(path)
         ori_h, ori_w, _= data_ori.shape
         h, w, _= data.shape
@@ -126,11 +89,8 @@ class HSIDataLoader(object):
 
     def load_data(self):
         ori_data, labels, TR, TE = self.load_raw_data()
-        if self.diffusion_sign:
-            diffusion_data, diffusion_labels = self.load_data_from_diffusion(ori_data, labels)
-            return diffusion_data, diffusion_labels, TR, TE
-        else:
-            return ori_data, labels, TR, TE
+        diffusion_data, diffusion_labels = self.load_data_from_diffusion(ori_data, labels)
+        return diffusion_data, diffusion_labels, TR, TE
 
     def _padding(self, X, margin=2):
         # pading with zeros
@@ -306,14 +266,8 @@ class HSIDataLoader(object):
         if self.if_numpy:
             return self.generate_numpy_dataset()
 
-        # check if use dump data
-        if self.use_dump:
-            trainset = DataSetIter.load(self.dump_path_prefix + "/trainset")
-            unlabelset = DataSetIter.load(self.dump_path_prefix + "/unlabelset")
-            testset = DataSetIter.load(self.dump_path_prefix + "/testset")
-            allset = DataSetIter.load(self.dump_path_prefix + "/allset")
-        else:
-            trainset, unlabelset, testset, allset = self.prepare_data()
+        
+        trainset, unlabelset, testset, allset = self.prepare_data()
 
         multi=self.data_param.get('unlabelled_multiple',1)
         train_loader = torch.utils.data.DataLoader(dataset=trainset,
@@ -339,16 +293,6 @@ class HSIDataLoader(object):
                                                 drop_last=False
                                                 )
         
-        if self.dump:
-            # dump datesetiter
-            if not os.path.exists(self.dump_path_prefix):
-                os.makedirs(self.dump_path_prefix)
-            trainset.dump(self.dump_path_prefix + "/trainset")
-            unlabelset.dump(self.dump_path_prefix + "/unlabelset")
-            testset.dump(self.dump_path_prefix + "/testset")
-            allset.dump(self.dump_path_prefix + "/allset")
-            print('dump dataset done.')
-
         return train_loader, unlabel_loader,test_loader, all_loader
 
        
@@ -356,5 +300,5 @@ class HSIDataLoader(object):
 
 if __name__ == "__main__":
     dataloader = HSIDataLoader({"data":{"data_path_prefix":'../../data', "data_sign": "Indian",
-        "data_file": "Indian_40", "use_dump":True}})
+        "data_file": "Indian_40"}})
     train_loader, unlabel_loader, test_loader, all_loader = dataloader.generate_torch_dataset()

@@ -20,7 +20,8 @@ Will be supplemented soon.
 
 How to use it?
 ---------------------
-1. Prepare diffusion features
+1. Prepare raw data and diffusion features
+   * Raw data is origin HSI data, likes IP, PU, SA datasets, You need to separate the training and test sets in advance. Or you can download ours from [here]().
    * The classification module requires reading the features extracted by the diffusion module as input. We provide the diffusion features extracted in our experiments for researchers to reproduce the results. Please download the specific data from [here]().
 2. Modify the path of diffusion features in the params to ensure that the code can read them.
 3. Run the code
@@ -28,7 +29,7 @@ How to use it?
    python workflow.py
    ```
 
-others
+Others
 ----------------------
 If you want to run the code in your own data, you can accordingly change the input (e.g., data, labels) and tune the parameters.
 
