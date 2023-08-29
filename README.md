@@ -3,7 +3,7 @@
 [Ning Chen](), [Jun Yue](), [Leyuan Fang](), [Shaobo Xia]()
 ___________
 
-The code in this toolbox implements the ["Spectralformer: Rethinking hyperspectral image classification with transformers"](). 
+The code in this toolbox implements the ["SpectralDiff: A Generative Framework for Hyperspectral Image Classification with Diffusion Models"](). 
 
 **The codes for this research includes two parts, [spectral-spatial diffusion module](https://github.com/chenning0115/spectraldiff_diffusion/) and [attention-based classification module](https://github.com/chenning0115/SpectralDiff#spectraldiff). This repository is for the attention-based classification module.**
 
