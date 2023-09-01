@@ -15,7 +15,21 @@ Citation
 ---------------------
 
 **Please kindly cite the papers if this code is useful and helpful for your research.**
-Will be supplemented soon.
+
+```N. Chen, J. Yue, L. Fang and S. Xia, "SpectralDiff: A Generative Framework for Hyperspectral Image Classification with Diffusion Models," in IEEE Transactions on Geoscience and Remote Sensing, doi: 10.1109/TGRS.2023.3310023.```
+
+```
+@ARTICLE{10234379,
+  author={Chen, Ning and Yue, Jun and Fang, Leyuan and Xia, Shaobo},
+  journal={IEEE Transactions on Geoscience and Remote Sensing}, 
+  title={SpectralDiff: A Generative Framework for Hyperspectral Image Classification with Diffusion Models}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={1-1},
+  doi={10.1109/TGRS.2023.3310023}}
+
+```
 
 
 How to use it?
