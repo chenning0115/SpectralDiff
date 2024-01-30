@@ -39,7 +39,7 @@ How to use it?
 ---------------------
 1. Prepare raw data and diffusion features
    * Raw data is origin HSI data, likes IP, PU, SA datasets, You need to separate the training and test sets in advance. Or you can download ours from [baiduyun](https://pan.baidu.com/s/19-YNNIjQxEOz-gl3vCLuDg), extract codes is ```pabk```.
-   * The classification module requires providing the features extracted by the diffusion module as input. We provide the diffusion features extracted in our experiments for researchers to reproduce the results. For the convenience of testing, we have provided all diffusion features data before PCA. Please download the specific data from [baiduyun](https://pan.baidu.com/s/19-YNNIjQxEOz-gl3vCLuDg), extract codes is ```pabk```.
+   * The classification module requires providing the features extracted by the diffusion module as input. We provide the diffusion features extracted in our experiments for researchers to reproduce the results. For the convenience of testing, we have provided all diffusion features data before PCA. Please download the specific data from [baiduyun](https://pan.baidu.com/s/19-YNNIjQxEOz-gl3vCLuDg), extract codes is ```pabk```, you can also get data from [google_drive](https://drive.google.com/drive/folders/10n7MmQRbIh-fpmIIFVtQk17QlXq-kBAo?usp=drive_link).
    * To train a diffusion model by yourself, you can use this code repository [spectral-spatial diffusion module](https://github.com/chenning0115/spectraldiff_diffusion/). 
 2. Modify the path of diffusion features in the params to ensure that the code can read them.
 3. Run the code
